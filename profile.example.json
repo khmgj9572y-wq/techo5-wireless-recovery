@@ -1,0 +1,16 @@
+{
+  "model": "cronos",
+  "serial": "EXAMPLE01",
+  "cn": "twrp-example01",
+  "ssid": "example-eap",
+  "domain_suffix": "radius.example.org",
+  "ca_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "persist_uuid": "00000000-0000-4000-8000-000000000001",
+  "kernel_release": "4.9.77-example",
+  "dhcp_server": "192.0.2.1",
+  "dns_servers": [
+    "198.51.100.53",
+    "203.0.113.53"
+  ],
+  "ntp_server": "192.0.2.1"
+}

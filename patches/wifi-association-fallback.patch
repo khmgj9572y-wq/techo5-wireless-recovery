@@ -1,0 +1,15 @@
+diff --git a/module/mgmt/assoc.c b/module/mgmt/assoc.c
+index 1f90da2..4ddaf3d 100644
+--- a/module/mgmt/assoc.c
++++ b/module/mgmt/assoc.c
+@@ -361,8 +361,8 @@ static __KAL_INLINE__ VOID assocBuildReAssocReqFrameCommonIEs(IN P_ADAPTER_T prA
+ 		u2SupportedRateSet = (prStaRec->u2OperationalRateSet &
+ 				      rNonHTPhyAttributes[u4NonHTPhyType].u2SupportedRateSet);
+ 
+-		ASSERT(u2SupportedRateSet);
+-
++		/* A basic PHY mismatch can yield zero here. The existing fallback
++		 * below handles it; asserting would panic recovery on some APs. */
+ 		if (!u2SupportedRateSet)
+ 			u2SupportedRateSet = rNonHTPhyAttributes[u4NonHTPhyType].u2SupportedRateSet;
+ 

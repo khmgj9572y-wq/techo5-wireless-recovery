@@ -1,0 +1,24 @@
+#!/sbin/sh
+umask 077
+PATH=/sbin:/bin:/usr/bin:/usr/sbin
+export PATH
+set -e
+[ "$(getprop ro.product.device)" = cronos ]
+[ "$(uname -r)" = "@KERNEL@" ]
+[ "$(getprop ro.serialno)" = "@SERIAL@" ]
+while [ ! -b /dev/block/mmcblk0p11 ]; do sleep 2; done
+[ "$(cat /sys/class/block/mmcblk0p11/start)" = 130048 ]
+[ "$(cat /sys/class/block/mmcblk0p11/size)" = 65536 ]
+if [ ! -f /tmp/t5-payload/.complete ]; then
+    # Fixed physical slot and bounded tail read; never use TWRP's remapped aliases.
+    dd if=/dev/block/mmcblk0p11 of=/tmp/t5-payload.tar bs=2048 skip=8192 count=@PAYLOAD_BLOCKS@ 2>/dev/null
+    [ "$(sha256sum /tmp/t5-payload.tar | cut -d ' ' -f 1)" = @PAYLOAD_SHA@ ]
+    rm -rf /tmp/t5-payload.new
+    mkdir -m 700 /tmp/t5-payload.new
+    tar -xf /tmp/t5-payload.tar -C /tmp/t5-payload.new
+    (cd /tmp/t5-payload.new/twrp-wifi && sha256sum -c SHA256SUMS >/dev/null)
+    touch /tmp/t5-payload.new/.complete
+    mv /tmp/t5-payload.new /tmp/t5-payload
+    rm -f /tmp/t5-payload.tar
+fi
+exec /sbin/sh /sbin/t5-wifi-supervisor.sh
