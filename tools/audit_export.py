@@ -14,6 +14,8 @@ ALLOWED = {
     'test_builder.py', 'test_dhcp_events.py', 'test_persistent_identity.py',
     'patches/wifi-association-fallback.patch', 'patches/LICENSE.mediatek-bsd',
     'identity/go.mod', 'identity/main.go', 'identity/main_test.go', 'tools/audit_export.py',
+    'identity/native/main.go', 'identity/native/main_test.go',
+    'network-shutdown.sh', 'test_network_shutdown.py',
 }
 DOC_NETS = [ipaddress.ip_network(n) for n in ('192.0.2.0/24', '198.51.100.0/24', '203.0.113.0/24')]
 # Construct patterns to avoid matching the scanner's own literal source.
