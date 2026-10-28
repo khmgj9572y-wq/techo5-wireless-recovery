@@ -20,10 +20,12 @@ def validate(p):
  from urllib.parse import urlsplit
  u=urlsplit(p['outlet']['url']);require(u.scheme in ('http','https') and u.hostname and not u.username and not u.password and not u.query and not u.fragment and u.path in ('','/'),'Outlet must be a credential-free HTTP origin')
  require(p['outlet']['relay_id'].startswith('switch/') and '\n' not in p['outlet']['relay_id'],'Invalid relay entity')
- require(set(p['usb'])=={'mapped_for_serial','port','hubs','protected'} and isinstance(p['usb']['port'],int) and 1<=p['usb']['port']<=31,'Invalid USB profile')
+ require(set(p['usb'])=={'mapped_for_serial','port','hubs','protected'} and type(p['usb']['port']) is int and 1<=p['usb']['port']<=31,'Invalid USB profile')
  for h in p['usb']['hubs']:
   require(set(h)=={'location','vidpid'} and re.fullmatch(r'[0-9]+-[0-9]+(?:\.[0-9]+)*',h['location']) and re.fullmatch('[0-9a-f]{4}:[0-9a-f]{4}',h['vidpid']),'Invalid explicit hub mapping')
- for item in p['usb']['protected']:require(set(item)=={'location','port','vidpid'} and item['port']!=p['usb']['port'],'Target port overlaps a protected port')
+ for item in p['usb']['protected']:
+  require(set(item)=={'location','port','vidpid'} and type(item['port']) is int and 1<=item['port']<=31 and re.fullmatch(r'[0-9]+-[0-9]+(?:\.[0-9]+)*',item['location']) and re.fullmatch('[0-9a-f]{4}:[0-9a-f]{4}',item['vidpid']),'Invalid protected USB binding')
+  require(not (item['location'] in {h['location'] for h in p['usb']['hubs']} and item['port']==p['usb']['port']),'Target port overlaps a protected port')
  require(isinstance(p['uhubctl_cmd'],list) and len(p['uhubctl_cmd']) in (1,3) and all(isinstance(x,str) and '\n' not in x for x in p['uhubctl_cmd']) and pathlib.Path(p['uhubctl_cmd'][-1]).name=='uhubctl' and (len(p['uhubctl_cmd'])==1 or p['uhubctl_cmd'][:2]==['sudo','-n']),'uhubctl command must not include control flags')
  w=p['wifi_helper'];require(set(w)=={'path','class','sha256'} and re.fullmatch(r'/data/local/tmp/[A-Za-z0-9_.-]+\.jar',w['path']) and re.fullmatch(r'[A-Za-z][A-Za-z0-9_.]*',w['class']) and re.fullmatch('[0-9a-f]{64}',w['sha256']),'Invalid existing Wi-Fi helper binding')
 def require_profile(mutation=True):

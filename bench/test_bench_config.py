@@ -19,8 +19,13 @@ class ProfileSafety(unittest.TestCase):
     with self.assertRaises(RuntimeError):c.require_profile()
     self.assertFalse((root/'state').exists());f.chmod(0o600);c.require_profile();self.assertEqual((root/'state').stat().st_mode&0o777,0o700)
  def test_target_and_protected_port_cannot_overlap(self):
-  p=self.example();p['usb']['protected']=[{'location':'1-1','port':2,'vidpid':'1111:1111'}]
+  p=self.example();p['usb']['hubs']=[{'location':'1-1','vidpid':'1111:1111'}];p['usb']['protected']=[{'location':'1-1','port':2,'vidpid':'1111:1111'}]
   with self.assertRaises(RuntimeError):c.validate(p)
+ def test_boolean_port_is_not_an_integer_port(self):
+  p=self.example();p['usb']['port']=True
+  with self.assertRaises(RuntimeError):c.validate(p)
+ def test_other_hub_can_protect_same_port_number(self):
+  p=self.example();p['usb']['hubs']=[{'location':'1-1','vidpid':'1111:1111'}];p['usb']['protected']=[{'location':'2-1','port':2,'vidpid':'2222:2222'}];c.validate(p)
  def test_unverified_usb_mapping_refused(self):
   with patch.object(c,'PROFILE',self.example()):
    with self.assertRaises(RuntimeError):c.require_usb_mapping()
