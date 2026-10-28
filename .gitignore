@@ -30,3 +30,6 @@ __pycache__/
 profile.json
 adb_keys
 identity/identity
+bench/.local/
+bench/out/
+bench/private-state/

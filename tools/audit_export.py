@@ -17,11 +17,35 @@ ALLOWED = {
     'identity/native/main.go', 'identity/native/main_test.go',
     'network-shutdown.sh', 'test_network_shutdown.py',
 }
+ALLOWED.update({
+    'bench/device_check.py',
+    'LINUX_HANDOFF.md',
+    'bench/adb_mode_window.py',
+    'bench/bcb.py',
+    'bench/bench_config.py',
+    'bench/collect.py',
+    'bench/experiments/network-shutdown-fence.sh',
+    'bench/inspect.py',
+    'bench/observer.py',
+    'bench/power.py',
+    'bench/profile.example.json',
+    'bench/templates/recovery-observe-adbconfig.sh',
+    'bench/templates/recovery-observe-cmode.sh',
+    'bench/templates/recovery-observe-return.sh',
+    'bench/templates/recovery-observe-softconnect.sh',
+    'bench/test_bench_config.py',
+    'bench/test_disconnect_fence.py',
+    'bench/test_power_restore.py',
+    'bench/verify_backups.py',
+    'bench/wifi_reselect.py',
+})
+
 DOC_NETS = [ipaddress.ip_network(n) for n in ('192.0.2.0/24', '198.51.100.0/24', '203.0.113.0/24')]
 # Construct patterns to avoid matching the scanner's own literal source.
 PEM = re.compile('-{5}BEGIN [A-Z0-9 ]+-{5}')
 HOST = re.compile('/' + r'(?:Users|home)/[^/\s]+')
 IP = re.compile(r'(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])')
+SERIAL = re.compile(r'(?i)\bg[0-9][a-z0-9]{14}\b')
 MAC = re.compile(r'(?i)\b(?:[0-9a-f]{2}:){5}[0-9a-f]{2}\b')
 
 
@@ -35,6 +59,8 @@ def check(name, content):
         return failures + ['binary content']
     if '\0' in text or PEM.search(text) or HOST.search(text):
         failures.append('binary, PEM material or local home path')
+    if SERIAL.search(text):
+        failures.append('literal factory serial')
     if MAC.search(text):
         failures.append('literal MAC address')
     for match in IP.finditer(text):

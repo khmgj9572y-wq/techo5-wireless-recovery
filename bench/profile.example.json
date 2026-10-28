@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "owner_confirmed": false,
+  "model": "cronos",
+  "serial": "EXAMPLE01",
+  "mac_suffix": "0000",
+  "android_kernel": "4.9.337-example",
+  "recovery_kernel": "4.9.77-example",
+  "recovery_version": "3.7.0_9-0",
+  "enrolled_ip": "192.0.2.10",
+  "misc_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "recovery_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "system_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "state_dir": ".",
+  "outlet": {"url": "http://192.0.2.20", "relay_id": "switch/Bench relay", "confirmed_for_serial": ""},
+  "usb": {"mapped_for_serial": "", "port": 2, "hubs": [], "protected": []},
+  "uhubctl_cmd": ["uhubctl"],
+  "wifi_helper": {"path": "/data/local/tmp/bench-wifi.jar", "class": "WifiPreference", "sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
+}
